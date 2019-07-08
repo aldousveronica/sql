@@ -29,6 +29,29 @@ create table specialist_type (
     type varchar(45) not null
 );
 
+create table illness (
+	illness_id int(11) not null auto_increment primary key,
+    name varchar(45) not null,
+    type_id int(11) not null,
+    severity int(3) not null
+
+);
+
+create table illness_type (
+    type_id int(11) not null auto_increment primary key,
+    name varchar(45) not null
+
+);
+
+create table patient_illness (
+	illness_id int(11) not null,
+    patient_id int(11) not null,
+    doctor_id int(11) not null
+
+);
+
+    
+
 # this includes patient ids and doctor ids -- it relates patients to doctors
 # many to many: one patient can have many doctors, one doctor can have many patients 
 create table patient_doctor (
@@ -59,6 +82,21 @@ insert into patient_doctor (patient_id, doctor_id) values
     (5, 2),
     (1, 2);
     
+insert into illness (name, type_id, severity) values
+	('congestive heart failure', 1, 7),
+    ('cold', 2, 1),
+    ('nose bleed', 2, 1),
+    ('flu', 2, 2),
+    ('asthma', 2, 4),
+    ('pancreatic cancer', 3, 9);
+    
+insert into illness_type (type_id, name) values
+	(1, 'Cardiac'),
+    (2, 'General Practice'),
+    (3, 'Oncology'),
+    (4, 'Pulmonary');
+    
+
 # example queries for this database
 
 # What are the names of all the patients?
@@ -110,5 +148,20 @@ inner join patient_doctor pd
 on p.patient_id = pd.patient_id
 where pd.doctor_id = 1;
 
-        
+	
+# Select all illnesses of a certain type
+select * from illness
+where type_id = 1;
+
+# Select all illnesses with a certain name
+select * from illness
+where name in ('nose bleed', 'flu', 'asthma');
+
+# Select all illnesses based on the severity column added above
+select name, severity from illness
+where severity = 2;
+
+# Create a query that shows illnesses with type id's replaced by type names
+select * from illness;
+select name, type_id as `type_name` from illness;
   
