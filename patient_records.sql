@@ -59,6 +59,37 @@ create table patient_doctor (
     doctor_id int(11) not null
 );
 
+create table bp_observation (
+	bp_id int (11) not null auto_increment primary key,
+    bp_diastolic int (3) not null, 
+    bp_systolic int (3) not null, 
+    is_normal int (1) not null,
+    patient_id int(11) not null
+    );
+    
+# many to one relationship, because for one patient, there can be many blood pressure observations,
+# but each observation is only ever referring to one patient
+
+
+insert into bp_observation (bp_systolic, bp_diastolic, is_normal, patient_id) values
+	(120, 80, 1, 1);
+
+# insert more patients- one patient has more than one reading
+insert into bp_observation (bp_systolic, bp_diastolic, is_normal, patient_id) values
+	(130, 90, 0, 1),
+    (125, 96, 0, 2),
+    (110, 74, 1, 3),
+    (102, 68, 1, 4),
+    (108, 73, 1, 5);
+    
+    
+    
+   
+    
+select * from bp_observation;
+    
+####### create table observation -- don't forget, Bryan!!
+
 # inserts rows into the tables 
 insert into patient (name, age) values
 	('Peter Parker', 16),
@@ -164,4 +195,25 @@ where severity = 2;
 # Create a query that shows illnesses with type id's replaced by type names
 select * from illness;
 select name, type_id as `type_name` from illness;
-  
+
+
+# select all BP observations for a given patient that are not normal 
+
+select * from bp_observation
+where is_normal = 0 and patient_id = 2;
+
+# for a patient that has more than one BP observation, return them in descending order of systolic readings 
+
+select * from bp_observation
+where patient_id = 1
+order by bp_systolic desc;
+
+# a hard one combine the bp_observation and patient tables so we see 
+# the name of each patient next to their systolic and diastolic values
+
+select p.name, bp.bp_diastolic, bp.bp_systolic
+from bp_observation bp
+inner join patient p on bp.patient_id = p.patient_id
+order by bp.bp_systolic desc;
+
+
